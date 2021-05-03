@@ -36,8 +36,11 @@ class Translator {
 	 * @returns {String} Returns the translated string
 	 */
 	translateTitle(str, title_list) {
-		for (const title of Object.keys(title_list))
-			str = str.replace(this.getRegex(title), this.getReplacedString(title_list[title]));
+		for (const title of Object.keys(title_list)) {
+			let translated_title = title_list[title];
+			translated_title = translated_title[0].toUpperCase() + translated_title.slice(1,);
+			str = str.replace(this.getRegex(title), this.getReplacedString(translated_title));
+		}
 
 		return str;
 	}
