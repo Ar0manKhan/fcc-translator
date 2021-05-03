@@ -26,7 +26,7 @@ class Translator {
 			str.replace(/(\d{1,2}):(\d{1,2})/g, this.addSpanTag('$1.$2')) :
 			str.replace(/(\d{1,2})\.(\d{1,2})/, this.addSpanTag('$1:$2'));
 
-		return str;
+		return this.getTitlecase(str);
 	}
 
 	/**
@@ -36,11 +36,8 @@ class Translator {
 	 * @returns {String} Returns the translated string
 	 */
 	translateTitle(str, title_list) {
-		for (const title of Object.keys(title_list)) {
-			let translated_title = title_list[title];
-			translated_title = translated_title[0].toUpperCase() + translated_title.slice(1,);
-			str = str.replace(this.getRegex(title), this.getReplacedString(translated_title));
-		}
+		for (const title of Object.keys(title_list))
+			str = str.replace(this.getRegex(title), this.getReplacedString(this.getTitlecase(title_list[title])));
 
 		return str;
 	}
@@ -112,19 +109,13 @@ class Translator {
 	}
 
 	// This method will add span to the given string
-	addSpanTag(str) {
-		return `<span class='highlight'>${str}</span>`;
-	}
+	addSpanTag = str => `<span class='highlight'>${str}</span>`;
 
 	// This method will add span tag and some regex things to the string, then return it
-	getReplacedString(str) {
-		return `$1${this.addSpanTag(str)}$2`;
-	}
+	getReplacedString = str => `$1${this.addSpanTag(str)}$2`;
 
 	// This method will return regex expression which is required
-	getRegex(str) {
-		return new RegExp(`(^|[^a-z])${str}([^a-z]|$)`, 'gi');
-	}
+	getRegex = str => new RegExp(`(^|[^a-z])${str}([^a-z]|$)`, 'gi');
 
 	// This method flips the object, i.e. key becomes values and vice versa
 	flipObj(obj) {
@@ -132,6 +123,9 @@ class Translator {
 		Object.keys(obj).forEach(key => ret[obj[key]] = key);
 		return ret;
 	}
+
+	// This method will convert first letter of string to uppercase
+	getTitlecase = str => str[0].toUpperCase() + str.slice(1,);
 }
 
 module.exports = Translator;
